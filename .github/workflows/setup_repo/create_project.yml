@@ -1,0 +1,22 @@
+name: Create Project
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: 'The name of the project to create'
+        required: true
+        type: string
+
+jobs:
+  create_project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create a new project
+        run: |
+          PROJECT_NAME=${{ steps.project.outputs.name }}
+          gh project create "${{ inputs.name }} Project" --body "This is a Kanban board project for ${{ inputs.name }}}."
+          gh project column create "To Do" --project-name "${{ inputs.name }} Project"
+          gh project column create "In Progress" --project-name "${{ inputs.name }} Project"
+          gh project column create "Done" --project-name "${{ inputs.name }} Project"
