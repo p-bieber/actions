@@ -4,7 +4,16 @@ description: Fetch repository and owner details
 outputs:
   details:
     description: "The fetched details"
-    value: ${{ steps.fetch-repo-details.outputs.result }}
+    value: $INFO
+  repo_name:
+    description: "name of repository"
+    value: $REPO_NAME
+  repo_description:
+    description: "description of repository"
+    value: $REPO_DESCRIPTION
+  repo_owner_name:
+    description: "The owner of repository"
+    value: $REPO_OWNER_NAME
 
 runs:
   using: 'composite'
@@ -35,3 +44,11 @@ runs:
           const result = await github.graphql(query, variables)
           console.log(result)
           return result
+
+    - run: |
+        echo $INFO | jq -r '.repository.name' >> $REPO_NAME
+        echo $INFO | jq -r '.repository.owner.name' >> $REPO_OWNER_NAME
+        echo $INFO | jq -r '.repository.description' >> $REPO_DESCRIPTION
+      shell: bash
+      env:
+        INFO: ${{ steps.fetch-repo-details.outputs.result }}
