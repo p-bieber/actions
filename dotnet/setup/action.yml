@@ -1,0 +1,14 @@
+name: Setup .NET
+description: 'Sets up .NET environment'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ inputs.dotnet_version }}
+inputs:
+  dotnet_version:
+    description: 'The version of .NET to use'
+    required: true
+    default: '9.0.x'

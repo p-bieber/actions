@@ -1,0 +1,14 @@
+name: Build and Test .NET Application
+description: 'Builds and tests a .NET application'
+runs:
+  using: 'composite'
+  steps:
+    - name: Test
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=test_results.trx"
+      shell: bash
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: '**/*.trx'

@@ -1,0 +1,37 @@
+name: Publish Package
+on:
+  workflow_call:
+    inputs:
+      publish_to_github:
+        required: false
+        type: boolean
+        default: false
+      github_token:
+        required: false
+        type: string
+      publish_to_nuget:
+        required: false
+        type: boolean
+        default: false
+      nuget_api_key:
+        required: false
+        type: string
+
+jobs:
+  publish-github:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.publish_to_github }}
+    steps:
+      - name: Publish to GitHub Packages
+        uses: p-bieber/actions/dotnet/package-publish-github@master
+        with:
+          github_token: ${{ inputs.github_token }}
+
+  publish-nuget:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.publish_to_nuget }}
+    steps:
+      - name: Publish to NuGet.org
+        uses: p-bieber/actions/dotnet/package-publish-nugetorg@master
+        with:
+          nuget_api_key: ${{ inputs.nuget_api_key }}

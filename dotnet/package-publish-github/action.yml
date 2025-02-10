@@ -1,0 +1,18 @@
+name: Publish to GitHub Packages
+description: 'Publishes a .NET package to GitHub Packages'
+runs:
+  using: 'composite'
+  steps:
+    - name: Download packaged artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: package-output
+
+    - name: Publish to GitHub Packages
+      run: dotnet nuget push ./nupkg/*.nupkg -k ${{ inputs.github_token }} -s https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      shell: bash
+
+inputs:
+  github_token:
+    description: 'GitHub token'
+    required: true

@@ -1,0 +1,29 @@
+name: .NET Build,Test and Pack
+on:
+  workflow_call:
+    inputs:
+      dotnet_version:
+        required: true
+        type: string
+        default: '9.0.x'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: p-bieber/actions/dotnet/setup@master
+        with:
+          dotnet_version: ${{ inputs.dotnet_version }}
+  
+      - name: Build
+        uses: p-bieber/actions/dotnet/build@master
+
+      - name: Test
+        uses: p-bieber/actions/dotnet/test@master
+    
+      - name: Pack .NET Application
+        uses: p-bieber/actions/dotnet/pack@master

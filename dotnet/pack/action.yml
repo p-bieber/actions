@@ -1,0 +1,14 @@
+name: Pack .NET Application
+description: 'Packs a .NET application'
+runs:
+  using: 'composite'
+  steps:
+    - name: Pack
+      run: dotnet pack --configuration Release --no-build --output ./nupkg
+      shell: bash
+
+    - name: Upload packaged artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: package-output
+        path: ./nupkg
