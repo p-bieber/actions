@@ -6,12 +6,12 @@ runs:
 
     - name: Set variables
       run: |
-        TEMPLATE_NAME="${{ inputs.template_name }}"
-        NEW_NAME="${{ inputs.new_name }}"
-        PREFIX="${{ inputs.prefix }}"
-        AUTHORS="${{ inputs.authors }}"
-        DESCRIPTION="${{ inputs.description }}"
-        REPOSITORY_URL="${{ inputs.repository_url }}"
+        TEMPLATE_NAME=${{ inputs.template_name }}
+        NEW_NAME=${{ inputs.new_name }}
+        PREFIX=${{ inputs.prefix }}
+        AUTHORS=${{ inputs.authors }}
+        DESCRIPTION=${{ inputs.description }}
+        REPOSITORY_URL=${{ inputs.repository_url }}
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
       shell: bash
@@ -22,7 +22,7 @@ runs:
 
     - name: Rename solution file
       run: |
-        echo "Renaming $TEMPLATE_NAME.sln to $NEW_NAME.sln"
+        echo "Renaming ${TEMPLATE_NAME}.sln to ${NEW_NAME}.sln"
         mv ${TEMPLATE_NAME}.sln ${NEW_NAME}.sln
         sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" ${NEW_NAME}.sln
       shell: bash

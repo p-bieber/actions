@@ -1,0 +1,31 @@
+name: Setup Package-Template
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  run-rename-template:
+    if: ${{ github.repository != 'p-bieber/package-template' }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        ref: ${{ github.head_ref }}
+
+    - name: Fetch Details
+      id: fetch-details
+      uses: p-bieber/actions/common/fetch-repo-details@master
+    
+    - name: Rename Files
+      env:
+        INFO: ${{ fetch-details.outputs.result }}
+      uses: p-bieber/actions/dotnet/rename-template@master
+      with:
+        template_name: Package-Template
+        new_name: $(echo $INFO | jq -r '.repository.name')
+        authors: $(echo $INFO | jq -r '.repository.owner.name')
+        description: $(echo $INFO | jq -r '.repository.description')
+        repository_url: ${{ github.repository }}
+  
