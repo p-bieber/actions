@@ -22,7 +22,7 @@ runs:
 
     - name: Rename solution file
       run: |
-        echo "Renaming ${TEMPLATE_NAME}.sln to ${NEW_NAME}.sln"
+        echo "Renaming $TEMPLATE_NAME.sln to $NEW_NAME.sln"
         mv ${TEMPLATE_NAME}.sln ${NEW_NAME}.sln
         sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" ${NEW_NAME}.sln
       shell: bash
