@@ -22,6 +22,7 @@ runs:
 
     - name: Rename solution file
       run: |
+        echo "Renaming ${TEMPLATE_NAME}.sln to ${NEW_NAME}.sln"
         mv ${TEMPLATE_NAME}.sln ${NEW_NAME}.sln
         sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" ${NEW_NAME}.sln
       shell: bash
@@ -29,6 +30,10 @@ runs:
     - name: Rename project files and directories
       run: |
         find . -type d -name "${TEMPLATE_NAME}*" -exec bash -c 'mv "$0" "${0/${TEMPLATE_NAME}/${NEW_NAME}}" && find "${0/${TEMPLATE_NAME}/${NEW_NAME}}" -type f -exec sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" {} +' {} \;
+      shell: bash
+
+    - name: List directory contents (after renaming)
+      run: ls -al
       shell: bash
 
     - name: Rename references in project files
