@@ -3,7 +3,6 @@ description: 'Renames a template solution with all projects and references, and 
 runs:
   using: 'composite'
   steps:
-
     - name: Rename solution file
       run: |
         echo "Renaming ${{ inputs.template_name }}.sln to ${{ inputs.new_name }}.sln"
@@ -41,10 +40,10 @@ runs:
       shell: bash
 
 inputs:
-  { inputs.template_name }:
+  template_name:
     description: 'The new name for the solution'
     required: true
-  { inputs.new_name }:
+  new_name:
     description: 'The new name for the solution'
     required: true
   authors:
@@ -56,7 +55,7 @@ inputs:
   repository_url:
     description: 'Repository URL for the package'
     required: true
-  { inputs.prefix }:
-    description: '{ inputs.prefix } for rootnamespace and packageId'
+  prefix:
+    description: 'Prefix for rootnamespace and packageId'
     required: false
-    default: '{ inputs.prefix }'
+    default: 'PREFIX'
