@@ -1,70 +1,50 @@
 name: Rename Template Solution
-description: 'Renames a template solution with all projects and references, and applies a prefix to rootnamespace and packageId'
+description: 'Renames a template solution with all projects and references, and applies a { inputs.prefix } to rootnamespace and packageId'
 runs:
   using: 'composite'
   steps:
 
-    - name: Set variables
-      run: |
-        TEMPLATE_NAME=${{ inputs.template_name }}
-        NEW_NAME=${{ inputs.new_name }}
-        PREFIX=${{ inputs.prefix }}
-        AUTHORS=${{ inputs.authors }}
-        DESCRIPTION=${{ inputs.description }}
-        REPOSITORY_URL=${{ inputs.repository_url }}
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      shell: bash
-
-    - name: List directory contents (before renaming)
-      run: ls -al
-      shell: bash
-
     - name: Rename solution file
       run: |
-        echo "Renaming $TEMPLATE_NAME.sln to ${NEW_NAME}.sln"
-        mv ${TEMPLATE_NAME}.sln ${NEW_NAME}.sln
-        sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" ${NEW_NAME}.sln
+        echo "Renaming ${{ inputs.template_name }}.sln to ${{ inputs.new_name }}.sln"
+        mv ${{ inputs.template_name }}.sln ${{ inputs.new_name }}.sln
+        sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" ${{ inputs.new_name }}.sln
       shell: bash
 
     - name: Rename project files and directories
       run: |
-        find . -type d -name "${TEMPLATE_NAME}*" -exec bash -c 'mv "$0" "${0/${TEMPLATE_NAME}/${NEW_NAME}}" && find "${0/${TEMPLATE_NAME}/${NEW_NAME}}" -type f -exec sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" {} +' {} \;
-      shell: bash
-
-    - name: List directory contents (after renaming)
-      run: ls -al
+        find . -type d -name "${{ inputs.template_name }}*" -exec bash -c 'mv "$0" "${0/${{ inputs.template_name }}/${{ inputs.new_name }}}" && find "${0/${{ inputs.template_name }}/${{ inputs.new_name }}}" -type f -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} +' {} \;
       shell: bash
 
     - name: Rename references in project files
       run: |
-        find . -type f -name "*.csproj" -exec sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" {} \;
-        find . -type f -name "*.targets" -exec sed -i "s/${TEMPLATE_NAME}/${NEW_NAME}/g" {} \;
-        find . -type f -name "*.csproj" -exec sed -i "s/<RootNamespace>.*<\/RootNamespace>/<RootNamespace>${PREFIX}.${NEW_NAME}<\/RootNamespace>/g" {} \;
-        find . -type f -name "*.csproj" -exec sed -i "s/<PackageId>.*<\/PackageId>/<PackageId>${PREFIX}.${NEW_NAME}<\/PackageId>/g" {} \;
-        find . -type f -name "*.csproj" -exec sed -i "s/<Authors>.*<\/Authors>/<Authors>${AUTHORS}<\/Authors>/g" {} \;
-        find . -type f -name "*.csproj" -exec sed -i "s/<Description>.*<\/Description>/<Description>${DESCRIPTION}<\/Description>/g" {} \;
-        find . -type f -name "*.csproj" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${REPOSITORY_URL}<\/RepositoryUrl>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<RootNamespace>.*<\/RootNamespace>/<RootNamespace>${PREFIX}.${NEW_NAME}<\/RootNamespace>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<PackageId>.*<\/PackageId>/<PackageId>${PREFIX}.${NEW_NAME}<\/PackageId>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<Authors>.*<\/Authors>/<Authors>${AUTHORS}<\/Authors>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<Description>.*<\/Description>/<Description>${DESCRIPTION}<\/Description>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${REPOSITORY_URL}<\/RepositoryUrl>/g" {} \;
+        find . -type f -name "*.csproj" -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} \;
+        find . -type f -name "*.targets" -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} \;
+        find . -type f -name "*.csproj" -exec sed -i "s/<RootNamespace>.*<\/RootNamespace>/<RootNamespace>${{ inputs.prefix }}.${{ inputs.new_name }}<\/RootNamespace>/g" {} \;
+        find . -type f -name "*.csproj" -exec sed -i "s/<PackageId>.*<\/PackageId>/<PackageId>${{ inputs.prefix }}.${{ inputs.new_name }}<\/PackageId>/g" {} \;
+        find . -type f -name "*.csproj" -exec sed -i "s/<Authors>.*<\/Authors>/<Authors>${{ inputs.authors }}<\/Authors>/g" {} \;
+        find . -type f -name "*.csproj" -exec sed -i "s/<Description>.*<\/Description>/<Description>${{ inputs.description}}<\/Description>/g" {} \;
+        find . -type f -name "*.csproj" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl>/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<RootNamespace>.*<\/RootNamespace>/<RootNamespace>${{ inputs.prefix }}.${{ inputs.new_name }}<\/RootNamespace>/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<PackageId>.*<\/PackageId>/<PackageId>${{ inputs.prefix }}.${{ inputs.new_name }}<\/PackageId>/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<Authors>.*<\/Authors>/<Authors>${{ inputs.authors }}<\/Authors>/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<Description>.*<\/Description>/<Description>${{ inputs.description}}<\/Description>/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl>/g" {} \;
       shell: bash
 
     - name: Commit changes
       run: |
         git add .
-        git commit -m "Renamed solution and projects from ${TEMPLATE_NAME} to ${NEW_NAME}"
+        git commit -m "Renamed solution and projects from ${{ inputs.template_name }} to ${{ inputs.new_name }}"
         git push
       shell: bash
 
 inputs:
-  template_name:
+  { inputs.template_name }:
     description: 'The new name for the solution'
     required: true
-  new_name:
+  { inputs.new_name }:
     description: 'The new name for the solution'
     required: true
   authors:
@@ -76,7 +56,7 @@ inputs:
   repository_url:
     description: 'Repository URL for the package'
     required: true
-  prefix:
-    description: 'Prefix for rootnamespace and packageId'
+  { inputs.prefix }:
+    description: '{ inputs.prefix } for rootnamespace and packageId'
     required: false
-    default: 'PREFIX'
+    default: '{ inputs.prefix }'
