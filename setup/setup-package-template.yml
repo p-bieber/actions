@@ -19,8 +19,9 @@ jobs:
       uses: p-bieber/actions/common/fetch-repo-details@master
     
     - name: Rename Files
+      needs: fetch-details
       env:
-        INFO: ${{ fetch-details.outputs.result }}
+        INFO: ${{ needs fetch-details.outputs.result }}
       uses: p-bieber/actions/dotnet/rename-template@master
       with:
         template_name: Package-Template
