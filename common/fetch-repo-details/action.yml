@@ -1,6 +1,11 @@
 name: Fetch Repository Details
 description: Fetch repository and owner details 
 
+outputs:
+  details:
+    description: "The fetched details"
+    value: ${{ steps.fetch-repo-details.outputs.result }}
+
 runs:
   using: 'composite'
   steps:
