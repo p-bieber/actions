@@ -29,7 +29,10 @@ runs:
           }
           const result = await github.graphql(query, variables)
           console.log(result)
-          echo "repo_name=$((result | jq -r '.repository.name'))" >> $GITHUB_OUTPUT
-          echo "repo_owner_name=$((result | jq -r '.repository.owner.name'))" >> $GITHUB_OUTPUT
-          echo "repo_description=$((result | jq -r '.repository.description'))" >> $GITHUB_OUTPUT
+          const repoName = result.repository.name;
+          const repoOwnerName = result.repository.owner.name;
+          const repoDescription = result.repository.description;
+          core.setOutput("repo_name", repoName);
+          core.setOutput("repo_owner_name", repoOwnerName);
+          core.setOutput("repo_description", repoDescription);
           return result
