@@ -16,6 +16,10 @@ runs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
       shell: bash
 
+    - name: List directory contents (before renaming)
+      run: ls -al
+      shell: bash
+
     - name: Rename solution file
       run: |
         mv ${TEMPLATE_NAME}.sln ${NEW_NAME}.sln
