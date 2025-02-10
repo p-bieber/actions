@@ -3,8 +3,6 @@ description: 'Renames a template solution with all projects and references, and 
 runs:
   using: 'composite'
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
 
     - name: Set variables
       run: |
