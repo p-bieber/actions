@@ -9,10 +9,13 @@ runs:
         mv ${{ inputs.template_name }}.sln ${{ inputs.new_name }}.sln
         sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" ${{ inputs.new_name }}.sln
       shell: bash
-
+    
     - name: Rename project files and directories
       run: |
-        find . -type d -name "${{ inputs.template_name }}*" -exec bash -c 'mv "$0" "${0/${{ inputs.template_name }}/${{ inputs.new_name }}}" && find "${0/${{ inputs.template_name }}/${{ inputs.new_name }}}" -type f -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} +' {} \;
+        # Ensure directories exist
+        mkdir -p ./src/${{ inputs.template_name }} ./tests/${{ inputs.template_name }}.Tests
+        # Rename directories and update file contents
+        find . -type d -name "${{ inputs.template_name }}*" -exec bash -c 'mv "$0" "${0//${{ inputs.template_name }}/${{ inputs.new_name }}}" && find "${0//${{ inputs.template_name }}/${{ inputs.new_name }}}" -type f -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} +' {} \;
       shell: bash
 
     - name: Rename references in project files
