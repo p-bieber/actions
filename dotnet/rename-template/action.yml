@@ -43,16 +43,16 @@ runs:
         find . -type f -name "*.csproj" -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} \;
         find . -type f -name "*.props" -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} \;
         find . -type f -name "*.targets" -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} \;
-        find . -type f -name "*.csproj" -exec sed -i "s/<RootNamespace>.*<\/RootNamespace>/<RootNamespace>${{ inputs.prefix }}.${{ inputs.new_name }}<\/RootNamespace>/g" {} \;
+        find . -type f -name "*.csproj" -exec sed -i "s/<Prefix>.*<\/Prefix>/<Prefix>${{ inputs.prefix }}<\/Prefix>/g" {} \;
         find . -type f -name "*.csproj" -exec sed -i "s/<PackageId>.*<\/PackageId>/<PackageId>${{ inputs.prefix }}.${{ inputs.new_name }}<\/PackageId>/g" {} \;
         find . -type f -name "*.csproj" -exec sed -i "s/<Authors>.*<\/Authors>/<Authors>${{ inputs.authors }}<\/Authors>/g" {} \;
+        find . -type f -name "*.csproj" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url }}<\/RepositoryUrl>/g" {} \;
         find . -type f -name "*.csproj" -exec sed -i "s/<Description>.*<\/Description>/<Description>${{ inputs.description}}<\/Description>/g" {} \;
-        find . -type f -name "*.csproj" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<RootNamespace>.*<\/RootNamespace>/<RootNamespace>${{ inputs.prefix }}.${{ inputs.new_name }}<\/RootNamespace>/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<Prefix>.*<\/Prefix>/<Prefix>${{ inputs.prefix }}<\/Prefix>/g" {} \;
         find . -type f -name "*.props" -exec sed -i "s/<PackageId>.*<\/PackageId>/<PackageId>${{ inputs.prefix }}.${{ inputs.new_name }}<\/PackageId>/g" {} \;
         find . -type f -name "*.props" -exec sed -i "s/<Authors>.*<\/Authors>/<Authors>${{ inputs.authors }}<\/Authors>/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url }}<\/RepositoryUrl>/g" {} \;
         find . -type f -name "*.props" -exec sed -i "s/<Description>.*<\/Description>/<Description>${{ inputs.description}}<\/Description>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl>/g" {} \;
       shell: bash
 
     
