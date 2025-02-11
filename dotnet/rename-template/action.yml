@@ -48,16 +48,7 @@ runs:
         find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl}/g" {} \;
       shell: bash
 
-    - name: Commit changes
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add .
-        git commit -m "Renamed solution and projects from ${{ inputs.template_name }} to ${{ inputs.new_name }}"
-        git push
-      shell: bash
+    
 
 inputs:
   template_name:
