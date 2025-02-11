@@ -9,14 +9,27 @@ runs:
         mv ${{ inputs.template_name }}.sln ${{ inputs.new_name }}.sln
         sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" ${{ inputs.new_name }}.sln
       shell: bash
-    
+
     - name: Rename project files and directories
-      run: |
-        # Ensure directories exist
-        mkdir -p ./src/${{ inputs.template_name }} ./tests/${{ inputs.template_name }}.Tests
-        # Rename directories and update file contents
-        find . -type d -name "${{ inputs.template_name }}*" -exec bash -c 'mv "$0" "${0//${{ inputs.template_name }}/${{ inputs.new_name }}}" && find "${0//${{ inputs.template_name }}/${{ inputs.new_name }}}" -type f -exec sed -i "s/${{ inputs.template_name }}/${{ inputs.new_name }}/g" {} +' {} \;
-      shell: bash
+      uses: actions/github-script@v4
+      with:
+        script: |
+          const { execSync } = require('child_process');
+      
+          const templateName = process.env.INPUT_TEMPLATE_NAME;
+          const newName = process.env.INPUT_NEW_NAME;
+
+          execSync(`mkdir -p ./src/${templateName} ./tests/${templateName}.Tests`);
+
+          const findDirs = execSync(`find . -type d -name "${templateName}*"`).toString().trim().split('\n');
+          findDirs.forEach(dir => {
+          const newDir = dir.replace(templateName, newName);
+          execSync(`mv "${dir}" "${newDir}"`);
+          execSync(`find "${newDir}" -type f -exec sed -i "s/${templateName}/${newName}/g" {} +`);
+          });
+        env:
+          INPUT_TEMPLATE_NAME: ${{ inputs.template_name }}
+          INPUT_NEW_NAME: ${{ inputs.new_name }}
 
     - name: Rename references in project files
       run: |
