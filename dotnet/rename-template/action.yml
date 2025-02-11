@@ -52,7 +52,7 @@ runs:
         find . -type f -name "*.props" -exec sed -i "s/<PackageId>.*<\/PackageId>/<PackageId>${{ inputs.prefix }}.${{ inputs.new_name }}<\/PackageId>/g" {} \;
         find . -type f -name "*.props" -exec sed -i "s/<Authors>.*<\/Authors>/<Authors>${{ inputs.authors }}<\/Authors>/g" {} \;
         find . -type f -name "*.props" -exec sed -i "s/<Description>.*<\/Description>/<Description>${{ inputs.description}}<\/Description>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl}/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl>/g" {} \;
       shell: bash
 
     
