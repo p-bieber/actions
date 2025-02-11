@@ -2,31 +2,81 @@ name: Setup Package-Template
 
 on:
   workflow_dispatch:
-    
+
 jobs:
-  run-rename-template:
+  get-details:
     if: ${{ github.repository != 'p-bieber/package-template' }}
     runs-on: ubuntu-latest
+    outputs:
+      repo_name: ${{ steps.fetch-details.outputs.repo_name }}
+      repo_description: ${{ steps.fetch-details.outputs.repo_description }}
+      repo_owner_name: ${{ steps.fetch-details.outputs.repo_owner_name }}
+    steps:
+    - name: Fetch Details
+      id: fetch-details
+      uses: actions/github-script@v4
+      with: 
+        script: |
+          const query = `query($owner:String!, $name:String!) {
+            repository(owner:$owner, name:$name) {
+              name
+              description
+              owner {
+                login
+                ... on User {
+                  name
+                }
+                ... on Organization {
+                  name
+                }
+              }
+            }
+          }`;
+          const variables = {
+            owner: context.repo.owner,
+            name: context.repo.repo
+          };
+          const result = await github.graphql(query, variables);
+          console.log("Repository Details:", result);
+          const repoName = result.repository.name;
+          const repoOwnerName = result.repository.owner.name;
+          const repoDescription = result.repository.description;
+          core.setOutput("repo_name", repoName);
+          core.setOutput("repo_owner_name", repoOwnerName);
+          core.setOutput("repo_description", repoDescription);
+          console.log("Outputs Set:", { repoName, repoOwnerName, repoDescription });
+
+  rename-template:
+    needs: get-details
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+    
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         ref: ${{ github.head_ref }}
 
-    - name: Fetch Details
-      id: fetch-details
-      uses: p-bieber/actions/common/fetch-repo-details@master
-    
     - name: Rename Files
-      needs: fetch-details
-      env:
-        INFO: ${{ needs fetch-details.outputs.result }}
       uses: p-bieber/actions/dotnet/rename-template@master
       with:
         template_name: Package-Template
-        new_name: $(echo $INFO | jq -r '.repository.name')
-        authors: $(echo $INFO | jq -r '.repository.owner.name')
-        description: $(echo $INFO | jq -r '.repository.description')
+        new_name: ${{ needs.get-details.outputs.repo_name }}
+        authors: ${{ needs.get-details.outputs.repo_owner_name }}
+        description: ${{ needs.get-details.outputs.repo_description }}
         repository_url: ${{ github.repository }}
-  
+
+    - name: Delete this Workflow File
+      run: rm -f .github/workflows/setup-package-template.yml
+
+    - name: Commit changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Renamed solution and projects from ${{ inputs.template_name }} to ${{ inputs.new_name }}"
+        git push
+      shell: bash
