@@ -23,13 +23,13 @@ runs:
 
           const findDirs = execSync(`find . -type d -name "${templateName}*"`).toString().trim().split('\n');
           findDirs.forEach(dir => {
-          const newDir = dir.replace(templateName, newName);
-          execSync(`mv "${dir}" "${newDir}"`);
-          execSync(`find "${newDir}" -type f -exec sed -i "s/${templateName}/${newName}/g" {} +`);
+            const newDir = dir.replace(templateName, newName);
+            execSync(`mv "${dir}" "${newDir}"`);
+            execSync(`find "${newDir}" -type f -exec sed -i "s/${templateName}/${newName}/g" {} +`);
           });
-        env:
-          INPUT_TEMPLATE_NAME: ${{ inputs.template_name }}
-          INPUT_NEW_NAME: ${{ inputs.new_name }}
+      env:
+        INPUT_TEMPLATE_NAME: ${{ inputs.template_name }}
+        INPUT_NEW_NAME: ${{ inputs.new_name }}
 
     - name: Rename references in project files
       run: |
@@ -45,7 +45,7 @@ runs:
         find . -type f -name "*.props" -exec sed -i "s/<PackageId>.*<\/PackageId>/<PackageId>${{ inputs.prefix }}.${{ inputs.new_name }}<\/PackageId>/g" {} \;
         find . -type f -name "*.props" -exec sed -i "s/<Authors>.*<\/Authors>/<Authors>${{ inputs.authors }}<\/Authors>/g" {} \;
         find . -type f -name "*.props" -exec sed -i "s/<Description>.*<\/Description>/<Description>${{ inputs.description}}<\/Description>/g" {} \;
-        find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl>/g" {} \;
+        find . -type f -name "*.props" -exec sed -i "s/<RepositoryUrl>.*<\/RepositoryUrl>/<RepositoryUrl>${{ inputs.repository_url}}<\/RepositoryUrl}/g" {} \;
       shell: bash
 
     - name: Commit changes
