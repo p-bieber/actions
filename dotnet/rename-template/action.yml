@@ -27,6 +27,13 @@ runs:
             execSync(`mv "${dir}" "${newDir}"`);
             execSync(`find "${newDir}" -type f -exec sed -i "s/${templateName}/${newName}/g" {} +`);
           });
+
+          const findFiles = execSync(`find . -type f -name "${templateName}*.csproj"`).toString().trim().split('\n');
+          findFiles.forEach(file => {
+            const newFile = file.replace(templateName, newName);
+            execSync(`mv "${file}" "${newFile}"`);
+            execSync(`sed -i "s/${templateName}/${newName}/g" "${newFile}"`);
+          }
       env:
         INPUT_TEMPLATE_NAME: ${{ inputs.template_name }}
         INPUT_NEW_NAME: ${{ inputs.new_name }}
